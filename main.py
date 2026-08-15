@@ -1,37 +1,49 @@
 import json
+
 class Pakrat:
     def __init__(self) -> None:
         pass
+
     def is_installed(self, package: str) -> bool:
         check = self.load_packages()
+
         for c in check:
             if c["Name"] == package:
                 return True
+
         return False
 
     def load_packages(self):
-        with open("installed.json","r") as installed:
+        with open("installed.json", "r") as installed:
             packages = json.load(installed)
+
         return packages
 
-    def save_packages(self, package : dict):
-        with open("installed.json","w") as file:
-            json.dump(package,file)
+    def save_packages(self, packages: list):
+        with open("installed.json", "w") as file:
+            json.dump(packages, file, indent=4)
 
-    def install(self,name : str ,version : str):
+    def install(self, name: str, version: str):
         if self.is_installed(name):
             print(f"The package {name} is already installed.")
         else:
-            package = {"Name" : name , "Version" : version}
-            self.save_packages(package)
+            package = {"Name": name, "Version": version}
 
-    def remove(self,name : str):
+            packages = self.load_packages()
+            packages.append(package)
+
+            self.save_packages(packages)
+
+    def remove(self, name: str):
         if self.is_installed(name):
-            removing_package = self.load_packages()
-            for rm in removing_package:
-                if rm["Name"] == name:
-                   del rm 
-            self.save_packages(removing_package)
+            packages = self.load_packages()
+
+            packages = [
+                package for package in packages
+                if package["Name"] != name
+            ]
+
+            self.save_packages(packages)
         else:
             print("There is no package match.")
 
