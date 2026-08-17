@@ -1,5 +1,5 @@
 import json
-
+import os
 class Pakrat:
     def __init__(self) -> None:
         pass
@@ -14,6 +14,8 @@ class Pakrat:
         return False
 
     def load_packages(self):
+        if not os.path.exists("installed.json"):
+                return []
         with open("installed.json", "r") as installed:
             packages = json.load(installed)
 
@@ -48,4 +50,7 @@ class Pakrat:
             print("There is no package match.")
 
     def list_packages(self):
-        
+        packages = self.load_packages()
+
+        for index,package in enumerate(packages) :
+            print(f'{index + 1}. {package["Name"]} {package["Version"]}')
